@@ -1,13 +1,28 @@
 export default defineEventHandler(async () => {
   return `
-  <style>
-    svg {
-      width: 50svw;
-      height: 50svh
-    }
-  </style>
+  <head>
+    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
+    <style>
+      svg {
+        width: 50svw;
+        height: 50svh
+      }
+
+      body {
+        width: 100svw;
+        height: 100svh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+    </style>
+  </head>
+<body>
   <h1>Login with QR Code</h1>
   <div id="qr">Loading...</div>
+  <a style="font-size: 2.5rem;" href="/auth/login">Go back</a>
+
 
   <script>
     let token
@@ -44,5 +59,6 @@ export default defineEventHandler(async () => {
 
     fetchQR()
   </script>
+</body>
   `;
 });

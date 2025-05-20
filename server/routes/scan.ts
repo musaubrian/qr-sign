@@ -1,7 +1,20 @@
 export default defineEventHandler(() => {
   return `
+  <head>
+    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
+    <style>
+      body {
+        width: 100svw;
+        height: 100svh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+    </style>
+  </head>
   <h1>Scan QR Code (Camera)</h1>
-  <div id="reader" style="width: 70svw; height: 60svh"></div>
+  <div id="reader" style="width: 40svw; height: 40svh"></div>
   <p id="status">Waiting for scan...</p>
 
   <script src="https://unpkg.com/html5-qrcode"></script>

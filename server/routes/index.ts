@@ -1,12 +1,16 @@
 export default defineEventHandler(() => {
   return `
+  <head>
+    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
+  </head>
   <h1>Protected Page</h1>
   <div id="out">Loading...</div>
-  <button onclick="logout()">Logout</button>
+  <br/>
+  <br/>
+  <button onclick="() => navigate('/scan')">Scan</button>
 
   <br/>
-  <br/>
-  <a style="font-size: 1.3rem;" href="/scan">Scan</a>
+  <button onclick="logout()">Logout</button>
 
   <script>
     const token = localStorage.getItem('jwt')
