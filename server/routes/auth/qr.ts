@@ -24,31 +24,50 @@ export default defineEventHandler(async () => {
   <a style="font-size: 2.5rem;" href="/auth/login">Go back</a>
 
 
-  <script>
-    let token
-    let interval
+<script>
+  let token
+  let interval
 
-    async function fetchQR() {
-      const res = await fetch('/api/qrcode')
-      const data = await res.json()
+  async function fetchQR() {
+    const prevToken = localStorage.getItem('qr_token')
 
-      token = data.token
-      document.getElementById('qr').innerHTML = data.qr
-
-      interval = setInterval(() => checkStatus(), 2000)
-      setTimeout(() => {
-        clearInterval(interval)
-        fetchQR()
-      }, data.expiresAt - Date.now() - 10000)
+    const url = new URL('/api/qrcode/', location.origin)
+    if (prevToken && prevToken !== token) {
+      url.searchParams.set('previous', prevToken)
     }
 
-  async function checkStatus() {
-    const res = await fetch('/api/status/' + token);
-    if (res.status === 410) return fetchQR();
-    if (!res.ok) return;
+    const res = await fetch(url)
+    const data = await res.json()
 
-    const data = await res.json();
+    token = data.token
+    document.getElementById('qr').innerHTML = data.qr
 
+    localStorage.setItem('qr_token', token)
+    const expiryTime = data.expiresAt - Date.now();
+
+    if (expiryTime <= 0) {
+      return fetchQR();
+    }
+
+    interval = setInterval(() => checkStatus(prevToken), 2000)
+    setTimeout(() => {
+      clearInterval(interval)
+      fetchQR()
+    }, data.expiresAt - Date.now() - 10000)
+  }
+
+  async function checkStatus(prevToken) {
+
+    const url = new URL('/api/status/' + token, location.origin)
+    if (prevToken && prevToken !== token) {
+      url.searchParams.set('previous', prevToken)
+    }
+
+    const res = await fetch(url)
+    if (res.status === 410) return fetchQR()
+    if (!res.ok) return
+
+    const { jwt, user } = await res.json()
     if (data.status === "authenticated") {
       clearInterval(interval);
       localStorage.setItem('jwt', data.jwt);
@@ -57,8 +76,8 @@ export default defineEventHandler(async () => {
     }
   }
 
-    fetchQR()
-  </script>
+  fetchQR()
+</script>
 </body>
   `;
 });

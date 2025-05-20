@@ -3,7 +3,7 @@ import { readFile, writeFile } from "fs/promises";
 import { join } from "path";
 
 export default defineEventHandler(async (event) => {
-  const { token, jwt: authToken, deviceInfo } = await readBody(event);
+  const { token, jwt: authToken, deviceInfo, oldToken } = await readBody(event);
   if (!token || !authToken)
     return sendError(event, createError({ statusCode: 400 }));
 
