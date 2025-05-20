@@ -25,5 +25,5 @@ export default defineEventHandler(async (event) => {
   const token = jwt.sign({ id: user.id, email }, process.env.JWT_SECRET!, {
     expiresIn: "10m",
   });
-  return { user: JSON.stringify(user), token };
+  return { user: JSON.stringify({ email: user.email, id: user.id }), token };
 });
