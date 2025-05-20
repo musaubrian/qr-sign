@@ -4,6 +4,10 @@ export default defineEventHandler(() => {
   <div id="out">Loading...</div>
   <button onclick="logout()">Logout</button>
 
+  <br/>
+  <br/>
+  <a style="font-size: 1.3rem;" href="/scan">Scan</a>
+
   <script>
     const token = localStorage.getItem('jwt')
     const user = JSON.parse(localStorage.getItem('user') || '{}')

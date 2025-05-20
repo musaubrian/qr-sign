@@ -1,7 +1,7 @@
 export default defineEventHandler(() => {
   return `
   <h1>Scan QR Code (Camera)</h1>
-  <div id="reader" style="width: 300px;"></div>
+  <div id="reader" style="width: 70svw; height: 60svh"></div>
   <p id="status">Waiting for scan...</p>
 
   <script src="https://unpkg.com/html5-qrcode"></script>
