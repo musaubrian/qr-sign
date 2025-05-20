@@ -38,6 +38,8 @@ export default defineEventHandler(() => {
         }
 
         status.innerText = "Login authorized"
+
+        location.href = '/'
       },
       (errorMsg) => {
         console.warn("QR error", errorMsg)
