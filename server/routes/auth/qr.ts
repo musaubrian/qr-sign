@@ -67,11 +67,13 @@ export default defineEventHandler(async () => {
     if (res.status === 410) return fetchQR()
     if (!res.ok) return
 
-    const { jwt, user } = await res.json()
-    if (data.status === "authenticated") {
+    const { status, jwt, user, tokenr } = await res.json()
+
+    if (status === "authenticated") {
       clearInterval(interval);
-      localStorage.setItem('jwt', data.jwt);
-      localStorage.setItem('user', JSON.stringify(data.user));
+      localStorage.setItem('jwt', jwt);
+      localStorage.setItem('qr_token', token);
+      localStorage.setItem('user', JSON.stringify(user));
       location.href = '/';
     }
   }
