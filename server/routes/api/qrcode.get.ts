@@ -4,10 +4,13 @@ import { writeFile } from "fs/promises";
 import { join } from "path";
 import { readJsonFileOrInit } from "~/utils/json";
 
-export default defineEventHandler(async () => {
+export default defineEventHandler(async (event) => {
   const token = uuid();
   const now = Date.now();
   const expiresAt = now + 30 * 1000; // 30 seconds
+  const host = event.node.req.headers.host;
+  const protocol = event.node.req.headers["x-forwarded-proto"] || "http";
+  const baseUrl = `${protocol}://${host}`;
 
   const file = join(
     process.cwd(),
@@ -26,7 +29,7 @@ export default defineEventHandler(async () => {
 
   await writeFile(file, JSON.stringify(sessions, null, 2));
 
-  const qrUrl = `http://localhost:3000/api/claim?token=${token}`;
+  const qrUrl = `${baseUrl}/api/claim?token=${token}`;
   const svgQr = renderSVG(qrUrl);
 
   return { token, qr: svgQr, expiresAt };

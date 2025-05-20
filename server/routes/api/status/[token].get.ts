@@ -29,7 +29,7 @@ export default defineEventHandler(async (event) => {
   if (session.expiresAt && Date.now() > session.expiresAt) {
     delete sessions[token];
     await writeFile(
-      join(process.cwd(), "storage/sessions.json"),
+      join(process.cwd(), "server", "routes", "storage", "sessions.json"),
       JSON.stringify(sessions, null, 2),
     );
     return sendError(
