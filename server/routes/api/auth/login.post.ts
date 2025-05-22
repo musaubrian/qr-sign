@@ -1,6 +1,7 @@
 import { readFile } from "fs/promises";
 import { join } from "path";
 import jwt from "jsonwebtoken";
+import { SessionUser } from "../claim.post";
 
 export default defineEventHandler(async (event) => {
   const { email, password } = await readBody(event);
@@ -13,7 +14,7 @@ export default defineEventHandler(async (event) => {
       "utf-8",
     ),
   );
-  const user = users[email];
+  const user = users[email] as SessionUser;
 
   if (!user || user.password !== password) {
     return sendError(
@@ -23,7 +24,15 @@ export default defineEventHandler(async (event) => {
   }
 
   const token = jwt.sign({ id: user.id, email }, process.env.JWT_SECRET!, {
-    expiresIn: "10m",
+    expiresIn: "1h",
   });
-  return { user: JSON.stringify({ email: user.email, id: user.id }), token };
+
+  return {
+    user: JSON.stringify({
+      email: user.email,
+      id: user.id,
+    }),
+    devices: user.devices,
+    token,
+  };
 });

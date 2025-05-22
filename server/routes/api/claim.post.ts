@@ -1,10 +1,25 @@
 import jwt from "jsonwebtoken";
 import { readFile, writeFile } from "fs/promises";
 import { join } from "path";
+import { DeviceSession } from "./ws";
+
+export type SessionUser = {
+  email: string;
+  password: string;
+  id: string;
+  devices: {
+    [key: string]: {
+      platform: string;
+      language: string;
+    };
+  };
+};
+
+type TrimmedUser = Pick<SessionUser, "email" | "id">;
 
 export default defineEventHandler(async (event) => {
-  const { token, jwt: authToken, deviceInfo, oldToken } = await readBody(event);
-  if (!token || !authToken)
+  const { token, jwt: authToken, device } = await readBody(event);
+  if (!token || !authToken || !device)
     return sendError(event, createError({ statusCode: 400 }));
 
   const sessionsPath = join(
@@ -14,36 +29,44 @@ export default defineEventHandler(async (event) => {
     "storage",
     "sessions.json",
   );
-  const sessions = JSON.parse(await readFile(sessionsPath, "utf8"));
 
-  const session = sessions[token];
+  const userSessionsPath = join(
+    process.cwd(),
+    "server",
+    "routes",
+    "storage",
+    "users.json",
+  );
+  const deviceSessions = JSON.parse(await readFile(sessionsPath, "utf8"));
+  const userSessions = JSON.parse(await readFile(userSessionsPath, "utf8"));
 
-  if (!session || session.status !== "pending") {
+  const deviceSession = deviceSessions[device] as DeviceSession;
+
+  if (
+    (!deviceSession || deviceSession.status === "pending",
+    deviceSession.token !== token)
+  ) {
     return sendError(
       event,
-      createError({ statusCode: 404, statusMessage: "Invalid or used token" }),
+      createError({
+        statusCode: 404,
+        statusMessage: "Invalid or expired token",
+      }),
     );
   }
 
-  if (session.expiresAt && Date.now() > session.expiresAt) {
-    delete sessions[token];
-    await writeFile(sessionsPath, JSON.stringify(sessions, null, 2));
+  if (deviceSession.tokenExpiry && Date.now() > deviceSession.tokenExpiry) {
+    delete deviceSessions[device];
+    await writeFile(sessionsPath, JSON.stringify(deviceSessions, null, 2));
     return sendError(
       event,
       createError({ statusCode: 410, statusMessage: "Token expired" }),
     );
   }
 
-  if (!sessions[token] || sessions[token].status !== "pending") {
-    return sendError(
-      event,
-      createError({ statusCode: 404, statusMessage: "Invalid or used token" }),
-    );
-  }
-
-  let user;
+  let user: TrimmedUser | null;
   try {
-    user = jwt.verify(authToken, process.env.JWT_SECRET!);
+    user = jwt.verify(authToken, process.env.JWT_SECRET!) as TrimmedUser;
   } catch (err) {
     return sendError(
       event,
@@ -51,17 +74,19 @@ export default defineEventHandler(async (event) => {
     );
   }
 
-  sessions[token] = {
-    status: "authenticated",
-    user: {
-      id: user.id,
-      email: user.email,
-    },
-    jwt: authToken,
-    claimedAt: Date.now(),
-    deviceInfo: deviceInfo || null,
+  deviceSession.status = "authenticated";
+  deviceSession.userId = user.id;
+  deviceSession.claimedAt = Date.now();
+
+  const sessionUser = userSessions[userSessionsPath] as SessionUser;
+
+  sessionUser.devices[device] = {
+    platform: deviceSession.platform,
+    language: deviceSession.language,
   };
 
-  await writeFile(sessionsPath, JSON.stringify(sessions, null, 2));
-  return { success: true };
+  await writeFile(sessionsPath, JSON.stringify(deviceSessions, null, 2));
+  await writeFile(userSessionsPath, JSON.stringify(userSessionsPath, null, 2));
+
+  return { success: true, devices: sessionUser.devices };
 });
