@@ -43,8 +43,9 @@ export default defineEventHandler(async (event) => {
   const deviceSession = deviceSessions[device] as DeviceSession;
 
   if (
-    (!deviceSession || deviceSession.status === "pending",
-    deviceSession.token !== token)
+    !deviceSession ||
+    deviceSession.status === "pending" ||
+    deviceSession.token !== token
   ) {
     return sendError(
       event,
@@ -78,7 +79,7 @@ export default defineEventHandler(async (event) => {
   deviceSession.userId = user.id;
   deviceSession.claimedAt = Date.now();
 
-  const sessionUser = userSessions[userSessionsPath] as SessionUser;
+  const sessionUser = userSessions[user.email] as SessionUser;
 
   sessionUser.devices[device] = {
     platform: deviceSession.platform,
@@ -86,7 +87,7 @@ export default defineEventHandler(async (event) => {
   };
 
   await writeFile(sessionsPath, JSON.stringify(deviceSessions, null, 2));
-  await writeFile(userSessionsPath, JSON.stringify(userSessionsPath, null, 2));
+  await writeFile(userSessionsPath, JSON.stringify(userSessions, null, 2));
 
   return { success: true, devices: sessionUser.devices };
 });
