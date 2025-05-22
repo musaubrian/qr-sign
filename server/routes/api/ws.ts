@@ -93,7 +93,7 @@ function genToken() {
 }
 
 function genUrl(baseUrl: string, token: string, deviceId: string) {
-  return `${baseUrl}/scan?d=${deviceId}t=${token}`;
+  return `${baseUrl}/scan?d=${deviceId}&t=${token}`;
 }
 
 async function initialMsg(data: InitMsg, baseUrl: string) {
