@@ -23,9 +23,13 @@ export default defineEventHandler(async (event) => {
     );
   }
 
-  const token = jwt.sign({ id: user.id, email }, process.env.JWT_SECRET!, {
-    expiresIn: "1h",
-  });
+  const token = jwt.sign(
+    { id: user.id, email },
+    useRuntimeConfig(event).jwtSecret,
+    {
+      expiresIn: "1h",
+    },
+  );
 
   return {
     user: JSON.stringify({
