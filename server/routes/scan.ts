@@ -52,9 +52,9 @@ export default defineEventHandler(() => {
           status.innerText = "Claim failed"
           return
         }
-        const data = res.json()
-        console.log(data.success, data.devices)
-        localStorage.setItem("devices", JSON.stringify({data.devices}))
+        const data = await res.json()
+        console.log(data.success, data.devices);
+        localStorage.setItem("devices", JSON.stringify(data.devices))
 
         status.innerText = "Login authorized"
         // location.href = '/'
