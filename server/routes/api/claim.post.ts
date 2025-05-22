@@ -67,7 +67,10 @@ export default defineEventHandler(async (event) => {
 
   let user: TrimmedUser | null;
   try {
-    user = jwt.verify(authToken, process.env.JWT_SECRET!) as TrimmedUser;
+    user = jwt.verify(
+      authToken,
+      useRuntimeConfig(event).jwtSecret,
+    ) as TrimmedUser;
   } catch (err) {
     return sendError(
       event,
