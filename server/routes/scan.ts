@@ -50,9 +50,14 @@ export default defineEventHandler(() => {
           status.innerText = "Claim failed"
           return
         }
-        const data = await res.json()
-        console.log(data.success, data.devices);
-        localStorage.setItem("devices", JSON.stringify(data.devices))
+        const {success, devices, authToken } = await res.json()
+        if (!success) {
+          alert("Authorization failed")
+          return
+        }
+
+        localStorage.setItem("devices", JSON.stringify(devices))
+        localStorage.setItem("jwt", authToken)
 
         status.innerText = "Login authorized"
         location.href = '/'

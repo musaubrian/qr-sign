@@ -93,7 +93,7 @@ export default defineEventHandler(async (event) => {
     await writeFile(sessionsPath, JSON.stringify(deviceSessions, null, 2));
     await writeFile(userSessionsPath, JSON.stringify(userSessions, null, 2));
 
-    return { success: true, devices: sessionUser.devices };
+    return { success: true, devices: sessionUser.devices, authToken };
   } catch (e) {
     console.error(`[CLAIM ERR]: ${e}`);
     return { success: false };
