@@ -2,7 +2,6 @@ export default defineEventHandler(() => {
   return `
 <!DOCTYPE html>
   <head>
-<link rel="stylesheet" href="https://fonts.xz.style/serve/inter.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@exampledev/new.css@1.1.2/new.min.css">
 <style>
       body {
