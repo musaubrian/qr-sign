@@ -33,7 +33,7 @@ export default defineEventHandler(() => {
     let html = '<table><thead><tr><th>Device ID</th><th>Platform</th><th>Language</th></tr></thead><tbody>'
     for (const [id, info] of Object.entries(devices || {})) {
     let shortId = id.slice(0, 8) + '...'
-    if (currentDeviceId === id) shortId = "Current Device"
+    if (currentDeviceId === id) shortId += " (Current Device)"
     html += \`<tr><td>\${shortId}</td><td>\${info.platform}</td><td>\${info.language}</td></tr>\`
     }
 
