@@ -28,6 +28,7 @@ const TTL = 20;
 //    status: "pending" | "authenticated" | "expired"
 //    tokenExpiry: number
 //    claimedAt: number
+//    authToken: string
 // }
 
 export type DeviceSession = {
@@ -39,6 +40,7 @@ export type DeviceSession = {
   createdAt: number; // stored as a unix timestamp
   tokenExpiry: number; // stored as a unix timestamp
   claimedAt: number | null;
+  authToken: string | null;
 };
 
 export default defineWebSocketHandler({
@@ -112,6 +114,7 @@ async function initialMsg(data: InitMsg, baseUrl: string) {
     createdAt: Date.now(),
     tokenExpiry: Date.now() + TTL * 1000,
     claimedAt: null,
+    authToken: null,
   };
 
   if (deviceId === null) deviceId = v7();
@@ -163,5 +166,6 @@ async function checkStatus(data: OtherMsg) {
   return {
     type: "status-check",
     status: session.status,
+    token: session.authToken, // probably shouldnt just send it over
   };
 }

@@ -45,7 +45,7 @@ export default defineEventHandler(() => {
       if (!res.ok) return alert('Login failed')
       const { token, user, devices } = await res.json()
 
-      localStorage.setItem('jwt', token)
+      localStorage.setItem('token', token)
       localStorage.setItem('user', user)
       localStorage.setItem('devices', JSON.stringify(devices))
       location.href = '/'

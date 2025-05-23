@@ -82,6 +82,7 @@ export default defineEventHandler(async (event) => {
     deviceSession.status = "authenticated";
     deviceSession.userId = user.id;
     deviceSession.claimedAt = Date.now();
+    deviceSession.authToken = authToken;
 
     const sessionUser = userSessions[user.email] as SessionUser;
 
@@ -93,7 +94,7 @@ export default defineEventHandler(async (event) => {
     await writeFile(sessionsPath, JSON.stringify(deviceSessions, null, 2));
     await writeFile(userSessionsPath, JSON.stringify(userSessions, null, 2));
 
-    return { success: true, devices: sessionUser.devices, authToken };
+    return { success: true, devices: sessionUser.devices };
   } catch (e) {
     console.error(`[CLAIM ERR]: ${e}`);
     return { success: false };

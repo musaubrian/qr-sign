@@ -20,7 +20,7 @@ export default defineEventHandler(() => {
 
   <script src="https://unpkg.com/html5-qrcode"></script>
   <script>
-    const jwt = localStorage.getItem('jwt')
+    const jwt = localStorage.getItem('token')
     if (!jwt) {
       alert("You must login first to scan.")
       location.href = '/auth/login'
@@ -57,7 +57,6 @@ export default defineEventHandler(() => {
         }
 
         localStorage.setItem("devices", JSON.stringify(devices))
-        localStorage.setItem("jwt", authToken)
 
         status.innerText = "Login authorized"
         location.href = '/'

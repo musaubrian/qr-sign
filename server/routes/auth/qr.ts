@@ -63,7 +63,6 @@ socket.addEventListener("message", function (event) {
   }
 
   if (data.type === "status-check") {
-    console.log("checked_status: ", data);
     if (data.status === "expired") {
       socket.send(
         JSON.stringify({
@@ -73,6 +72,7 @@ socket.addEventListener("message", function (event) {
       );
     }
     if (data.status === "authenticated") {
+      localStorage.setItem('token', data.token)
       alert("Authentication successful")
       location.href = '/'
     }
