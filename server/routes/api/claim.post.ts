@@ -45,7 +45,7 @@ export default defineEventHandler(async (event) => {
 
     if (
       !deviceSession ||
-      deviceSession.status === "pending" ||
+      deviceSession.status !== "pending" ||
       deviceSession.token !== token
     ) {
       return sendError(
