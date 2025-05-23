@@ -49,6 +49,7 @@ export default defineEventHandler(() => {
       localStorage.removeItem('token')
       localStorage.removeItem('user')
       localStorage.removeItem('devices')
+      localStorage.removeItem('userId')
       location.href = '/auth/login'
     }
   </script>
