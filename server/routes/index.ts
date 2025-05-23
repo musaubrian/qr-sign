@@ -17,7 +17,7 @@ export default defineEventHandler(() => {
   </div>
 
   <script>
-    const token = localStorage.getItem('jwt')
+    const token = localStorage.getItem('token')
     const user = JSON.parse(localStorage.getItem('user') || '{}')
     const devices = JSON.parse(localStorage.getItem("devices"))
 
@@ -41,7 +41,7 @@ export default defineEventHandler(() => {
     }
 
     function logout() {
-      localStorage.removeItem('jwt')
+      localStorage.removeItem('token')
       localStorage.removeItem('user')
       localStorage.removeItem('devices')
       location.href = '/auth/login'
