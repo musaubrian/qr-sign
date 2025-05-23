@@ -1,6 +1,5 @@
 export default defineEventHandler(() => {
   return `
-
 <!DOCTYPE html>
   <head>
 <link rel="stylesheet" href="https://fonts.xz.style/serve/inter.css">
@@ -31,7 +30,15 @@ export default defineEventHandler(() => {
       location.href = '/auth/login'
     } else {
       document.getElementById('out').innerText = 'Welcome ' + user.email
-      document.getElementById('devices').innerHTML = \`<pre> \${JSON.stringify(devices)} </pre>\`
+      let html = '<table><thead><tr><th>Device ID</th><th>Platform</th><th>Language</th></tr></thead><tbody>'
+      for (const [id, info] of Object.entries(devices || {})) {
+        const shortId = id.slice(0, 8) + '...'
+        html += \`<tr><td>\${shortId}</td><td>\${info.platform}</td><td>\${info.language}</td></tr>\`
+      }
+
+      html += '</tbody></table>'
+
+      document.getElementById('devices').innerHTML = html
     }
 
     function logout() {

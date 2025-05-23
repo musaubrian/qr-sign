@@ -74,8 +74,8 @@ socket.addEventListener("message", function (event) {
       );
     }
     if (data.status === "authenticated") {
-      alert("we authenticated boyyy")
-      console.log("we authed boy");
+      alert("Authentication successful")
+      location.href = '/'
     }
   }
 });

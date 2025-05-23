@@ -35,7 +35,6 @@ export default defineEventHandler(() => {
       { fps: 10, qrbox: 300 },
       async (decodedText) => {
         html5QrCode.stop()
-        status.innerText = "Scanned: " + decodedText
 
         const url = new URL(decodedText)
         const token = url.searchParams.get("t")
@@ -57,7 +56,7 @@ export default defineEventHandler(() => {
         localStorage.setItem("devices", JSON.stringify(data.devices))
 
         status.innerText = "Login authorized"
-        // location.href = '/'
+        location.href = '/'
       },
       (errorMsg) => {
         console.warn("QR error", errorMsg)
