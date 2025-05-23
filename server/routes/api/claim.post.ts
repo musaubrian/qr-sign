@@ -28,7 +28,7 @@ export default defineEventHandler(async (event) => {
       "server",
       "routes",
       "storage",
-      "sessions.json",
+      "device_sessions.json",
     );
 
     const userSessionsPath = join(
