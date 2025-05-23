@@ -18,27 +18,31 @@ export default defineEventHandler(() => {
 
   <script>
     const token = localStorage.getItem('token')
+    if (!token) {
+      location.href = '/auth/login'
+    }
+
     const user = JSON.parse(localStorage.getItem('user') || '{}')
+    fetch("/api/devices/"+user.email).then((res) => res.json()).then((d) => {localStorage.setItem("devices", JSON.stringify(d.devices))})
+
+    const currentDeviceId = localStorage.getItem("deviceId")
     const devices = JSON.parse(localStorage.getItem("devices"))
 
     function navigate(path) {
       window.location.href = path
     }
 
-    if (!token) {
-      location.href = '/auth/login'
-    } else {
-      document.getElementById('out').innerText = 'Welcome ' + user.email
-      let html = '<table><thead><tr><th>Device ID</th><th>Platform</th><th>Language</th></tr></thead><tbody>'
-      for (const [id, info] of Object.entries(devices || {})) {
-        const shortId = id.slice(0, 8) + '...'
-        html += \`<tr><td>\${shortId}</td><td>\${info.platform}</td><td>\${info.language}</td></tr>\`
-      }
-
-      html += '</tbody></table>'
-
-      document.getElementById('devices').innerHTML = html
+    document.getElementById('out').innerText = 'Welcome ' + user.email
+    let html = '<table><thead><tr><th>Device ID</th><th>Platform</th><th>Language</th></tr></thead><tbody>'
+    for (const [id, info] of Object.entries(devices || {})) {
+    let shortId = id.slice(0, 8) + '...'
+    if (currentDeviceId === id) shortId = "Current Device"
+    html += \`<tr><td>\${shortId}</td><td>\${info.platform}</td><td>\${info.language}</td></tr>\`
     }
+
+    html += '</tbody></table>'
+
+    document.getElementById('devices').innerHTML = html
 
     function logout() {
       localStorage.removeItem('token')
