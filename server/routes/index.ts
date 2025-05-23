@@ -22,15 +22,12 @@ export default defineEventHandler(() => {
       location.href = '/auth/login'
     }
 
-    const user = JSON.parse(localStorage.getItem('user') || '{}')
-    fetch("/api/devices/"+user.email).then((res) => res.json()).then((d) => {localStorage.setItem("devices", JSON.stringify(d.devices))})
+    const userId = localStorage.getItem("userId")
+    fetch("/api/devices/"+userId).then((res) => res.json()).then((d) => {localStorage.setItem("devices", JSON.stringify(d.devices))})
 
+    const user = JSON.parse(localStorage.getItem('user') || '{}')
     const currentDeviceId = localStorage.getItem("deviceId")
     const devices = JSON.parse(localStorage.getItem("devices"))
-
-    function navigate(path) {
-      window.location.href = path
-    }
 
     document.getElementById('out').innerText = 'Welcome ' + user.email
     let html = '<table><thead><tr><th>Device ID</th><th>Platform</th><th>Language</th></tr></thead><tbody>'
@@ -43,6 +40,10 @@ export default defineEventHandler(() => {
     html += '</tbody></table>'
 
     document.getElementById('devices').innerHTML = html
+
+    function navigate(path) {
+      window.location.href = path
+    }
 
     function logout() {
       localStorage.removeItem('token')

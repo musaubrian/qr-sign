@@ -84,7 +84,9 @@ export default defineEventHandler(async (event) => {
     deviceSession.claimedAt = Date.now();
     deviceSession.authToken = authToken;
 
-    const sessionUser = userSessions[user.email] as SessionUser;
+    const sessionUser = userSessions.find(
+      (u) => u.id === user.id,
+    ) as SessionUser;
 
     sessionUser.devices[device] = {
       platform: deviceSession.platform,

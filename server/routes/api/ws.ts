@@ -167,5 +167,6 @@ async function checkStatus(data: OtherMsg) {
     type: "status-check",
     status: session.status,
     token: session.authToken, // probably shouldnt just send it over
+    userId: session.userId,
   };
 }

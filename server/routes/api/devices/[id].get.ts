@@ -3,7 +3,7 @@ import { readFile } from "fs/promises";
 import { join } from "path";
 
 export default defineEventHandler(async (event) => {
-  const email = getRouterParam(event, "email");
+  const id = getRouterParam(event, "id");
   const userSessionsPath = join(
     process.cwd(),
     "server",
@@ -13,7 +13,7 @@ export default defineEventHandler(async (event) => {
   );
 
   const userSessions = JSON.parse(await readFile(userSessionsPath, "utf8"));
-  const userSession = userSessions[email] as SessionUser;
+  const userSession = userSessions.find((u) => u.id === id) as SessionUser;
 
   return { devices: userSession.devices };
 });

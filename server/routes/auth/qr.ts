@@ -73,6 +73,7 @@ socket.addEventListener("message", function (event) {
     }
     if (data.status === "authenticated") {
       localStorage.setItem('token', data.token)
+      localStorage.setItem('userId', data.userId)
       alert("Authentication successful")
       location.href = '/'
     }

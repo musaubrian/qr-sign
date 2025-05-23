@@ -14,7 +14,7 @@ export default defineEventHandler(async (event) => {
       "utf-8",
     ),
   );
-  const user = users[email] as SessionUser;
+  const user = users.find((u) => u.email === email) as SessionUser;
 
   if (!user || user.password !== password) {
     return sendError(
